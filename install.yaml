@@ -1,0 +1,67 @@
+---
+- name: Setup Ubuntu environment with required software
+  hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install VS Code
+      apt:
+        name: code
+        state: present
+      apt_repository:
+        repo: deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main
+        state: present
+        filename: vscode
+      apt_key:
+        url: https://packages.microsoft.com/keys/microsoft.asc
+        state: present
+
+    - name: Install MySQL Server
+      apt:
+        name: mysql-server
+        state: present
+
+    - name: Install Apache 2.4
+      apt:
+        name: apache2
+        state: present
+
+    - name: Install PHP 8.2 and necessary modules
+      apt:
+        name:
+          - php8.2
+          - libapache2-mod-php8.2
+          - php8.2-mysql
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Install UpWork Desktop Application
+      apt:
+        name: upwork
+        state: present
+      apt_repository:
+        repo: deb [arch=amd64] https://debian.upwork.com/ stable main
+        state: present
+        filename: upwork
+      apt_key:
+        url: https://debian.upwork.com/upwork.key
+        state: present
+
+    - name: Install FileZilla
+      apt:
+        name: filezilla
+        state: present
+
+    - name: Restart Apache service to apply PHP changes
+      service:
+        name: apache2
+        state: restarted
