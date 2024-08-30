@@ -20,22 +20,46 @@ sudo ufw allow OpenSSH
 sudo ufw allow 'Apache Full'
 sudo ufw status
 
-# Clone the Ansible Playbook Repository
-info "Cloning the pratik.yaml Ansible playbook from GitHub..."
-git clone https://github.com/tdarkscorpion/pratik.git
-cd pratik
+# Install VS Code
+info "Installing Visual Studio Code..."
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
+sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+sudo apt update
+sudo apt install -y code
 
-# Install Ansible if not already installed
-info "Installing Ansible..."
-sudo apt install -y ansible
+# Install MySQL
+info "Installing MySQL Server..."
+sudo apt install -y mysql-server
 
-# Run the Ansible Playbook
-info "Running the pratik.yaml playbook..."
-ansible-playbook pratik.yaml
+# Install Apache 2.4
+info "Installing Apache 2.4..."
+sudo apt install -y apache2
+
+# Install PHP 8.2
+info "Installing PHP 8.2 and necessary modules..."
+sudo apt install -y php8.2 libapache2-mod-php8.2 php8.2-mysql
+
+# Install Docker
+info "Installing Docker..."
+sudo apt install -y docker.io
+sudo systemctl start docker
+sudo systemctl enable docker
 
 # Add current user to Docker group
 info "Adding the current user to the Docker group..."
 sudo usermod -aG docker $USER
+
+# Install UpWork Desktop Application
+info "Installing UpWork Desktop application..."
+wget -qO - https://debian.upwork.com/upwork.key | sudo apt-key add -
+echo "deb [arch=amd64] https://debian.upwork.com/ stable main" | sudo tee /etc/apt/sources.list.d/upwork.list
+sudo apt update
+sudo apt install -y upwork
+
+# Install FileZilla
+info "Installing FileZilla..."
+sudo apt install -y filezilla
 
 # Secure MySQL installation
 info "Securing MySQL installation..."
